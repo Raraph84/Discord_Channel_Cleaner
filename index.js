@@ -1,12 +1,12 @@
-const Discord = require("discord.js");
+const { Client } = require("discord.js");
 const Config = require("./config.json");
 
-const client = new Discord.Client({ intents: [] });
+const client = new Client({ intents: [] });
 client.login(Config.token);
 
 client.on("ready", async () => {
 
-    /** @type {Discord.TextChannel} */
+    /** @type {import("discord.js").TextChannel} */
     const channel = await client.channels.fetch(Config.channelId);
 
     console.log(`Cleaning ${channel.name} !`);
@@ -15,7 +15,7 @@ client.on("ready", async () => {
 
     const fetch = async (id = null) => {
 
-        const messages = await channel.messages.fetch({ after: id });
+        const messages = await channel.messages.fetch({ before: id, limit: 100 });
 
         if (messages.size < 1)
             return;
@@ -26,11 +26,10 @@ client.on("ready", async () => {
         }
 
         await fetch(messages.last().id);
-        return;
     }
 
     await fetch();
 
+    client.destroy();
     console.log(`Cleaned ${channel.name} (${deletedMessages} messages) !`);
-    process.exit(0);
 });
