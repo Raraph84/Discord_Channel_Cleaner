@@ -13,7 +13,7 @@ client.on("ready", async () => {
 
     let deletedMessages = 0;
 
-    const fetch = async (id = null) => {
+    const fetchMessages = async (id = null) => {
 
         const messages = await channel.messages.fetch({ before: id, limit: 100 });
 
@@ -25,10 +25,10 @@ client.on("ready", async () => {
             deletedMessages++;
         }
 
-        await fetch(messages.last().id);
+        await fetchMessages(messages.last().id);
     }
 
-    await fetch();
+    await fetchMessages();
 
     client.destroy();
     console.log(`Cleaned ${channel.name} (${deletedMessages} messages) !`);
